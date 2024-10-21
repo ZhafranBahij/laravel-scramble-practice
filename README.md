@@ -1,66 +1,253 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Scramble Dedoc
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![image.png](ImgMarkdown/image.png)
 
-## About Laravel
+[https://scramble.dedoc.co/](https://scramble.dedoc.co/)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Step by Step
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Install Anything
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Install Laravel
+    
+    ```bash
+    composer global require laravel/installer
+    
+    laravel new example-app
+    ```
+    
+    ![image.png](ImgMarkdown/image%201.png)
+    
+    Fyi:
+    
+    - I choose none starter kit because I don’t need this for now.
+    - Using Pest for testing framework, I think it’s good.
+    
+    ![Using sqlite because lazy to create new DB in mysql](ImgMarkdown/image%202.png)
+    
+    Using sqlite because lazy to create new DB in mysql
+    
+    ![Done](ImgMarkdown/image%203.png)
+    
+    Done
+    
+    ![image.png](ImgMarkdown/image%204.png)
+    
+- Install Dedoc Scramble
+    
+    ```bash
+    composer require dedoc/scramble
+    ```
+    
+    ![image.png](ImgMarkdown/image%205.png)
+    
+    After install, you can open this
+    
+    ![image.png](ImgMarkdown/image%206.png)
+    
+- Install API
+    
+    In Laravel 11, you must install api first. But, you’ll automatically install Laravel Sanctum after install api.
+    
+    ```bash
+    php artisan install:api
+    ```
+    
+    ![image.png](ImgMarkdown/image%207.png)
+    
+    ![image.png](ImgMarkdown/image%208.png)
+    
 
-## Learning Laravel
+### CRUD Product API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+This step can be 
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Example
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Index
+    
+    ```php
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try {
+            $books = Book::query()
+            ->get();
+    
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Get all book',
+                'data' => $books,
+            ]);
+    
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status_code' => $th->getStatusCode(),
+                'message' => $th->getMessage(),
+                'data' => $th->getMessage(),
+            ]);
+        }
+    }
+    ```
+    
+    ![image.png](ImgMarkdown/image%209.png)
+    
+    ![image.png](ImgMarkdown/image%2010.png)
+    
+- Show
+    
+    ```php
+    /**
+     * Display the specified resource.
+     */
+    public function show(Book $book)
+    {
+        try {
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Get book',
+                'data' => $book,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status_code' => $th->getStatusCode(),
+                'message' => $th->getMessage(),
+                'data' => $th->getMessage(),
+            ]);
+        }
+    }
+    ```
+    
+    ![image.png](ImgMarkdown/image%2011.png)
+    
+    ![image.png](ImgMarkdown/image%2012.png)
+    
+    ![image.png](ImgMarkdown/image%2013.png)
+    
+- Delete
+    
+    ```php
+      /**
+       * Remove the specified resource from storage.
+       */
+      public function destroy(Book $book)
+      {
+          try {
+              $book->delete();
+              return response()->json([
+                  'status_code' => 200,
+                  'message' => 'Delete book',
+              ]);
+          } catch (\Throwable $th) {
+              return response()->json([
+                  'status_code' => $th->getStatusCode(),
+                  'message' => $th->getMessage(),
+              ]);
+          }
+      }
+    ```
+    
+    ![image.png](ImgMarkdown/image%2014.png)
+    
+- Create
+    
+    ![image.png](ImgMarkdown/image%2015.png)
+    
+    ![image.png](ImgMarkdown/image%2016.png)
+    
+    ![image.png](ImgMarkdown/image%2017.png)
+    
+- Update
+    
+    ```php
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateBookRequest $request, Book $book)
+    {
+        try {
+            $book->update($request->validated());
+    
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Successfully update data!',
+                'data' => $book,
+            ]);
+    
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status_code' => $th->getStatusCode(),
+                'message' => $th->getMessage(),
+                'data' => $th->getMessage(),
+            ]);
+        }
+    }
+    ```
+    
+    ![image.png](ImgMarkdown/image%2018.png)
+    
+    ![image.png](ImgMarkdown/image%2019.png)
+    
 
-## Laravel Sponsors
+### Using Sanctum
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+[https://laravel.com/docs/11.x/sanctum#issuing-mobile-api-tokens](https://laravel.com/docs/11.x/sanctum#issuing-mobile-api-tokens)
 
-### Premium Partners
+```php
+/**
+ * Login via API
+ */
+public function login (Request $request) {
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-## Contributing
+    $user = User::where('email', $request->email)->first();
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    // return $user;
 
-## Code of Conduct
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+        ]);
+    }
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    return $user->createToken(now()->toTimeString())->plainTextToken;
+}
+```
 
-## Security Vulnerabilities
+![image.png](ImgMarkdown/image%2020.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+![image.png](ImgMarkdown/image%2021.png)
 
-## License
+![If failed](ImgMarkdown/image%2022.png)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+If failed
+
+### Using Security Sanctum in Scramble Dedoc
+
+```php
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
+        $openApi->secure(
+            SecurityScheme::http('bearer')
+        );
+    });
+}
+```
+
+![Example using bearer token](ImgMarkdown/image%2023.png)
+
+Example using bearer token
+
+![If didn’t use bearer token](ImgMarkdown/image%2024.png)
+
+If didn’t use bearer token
